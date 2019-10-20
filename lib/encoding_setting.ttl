@@ -1,0 +1,24 @@
+;=====================================================================
+; 文字コード設定
+;=====================================================================
+
+; ■文字コードを判別し文字コードを設定 
+sendln 'echo $LANG' 
+wait 'ja_JP.UTF-8' 'ja_JP.eucJP' 'ja_JP.sjis' 'C'
+if result = 1 then 
+  ; UTF8 
+  callmenu 54013  ; [KanjiCode] Recv: UTF-8 
+  callmenu 54113  ; [KanjiCode] Send: UTF-8 
+elseif result = 2 then 
+  ; EUC 
+  callmenu 54011  ; [KanjiCode] Recv: EUC-JP 
+  callmenu 54111  ; [KanjiCode] Send: EUC-JP 
+elseif result = 3 then 
+  ; SJIS 
+  callmenu 54010  ; [KanjiCode] Recv: Shift_JIS 
+  callmenu 54110  ; [KanjiCode] Send: Shift_JIS 
+else
+
+endif
+ 
+exit

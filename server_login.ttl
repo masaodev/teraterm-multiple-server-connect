@@ -1,0 +1,92 @@
+;=====================================================================
+; サーバ接続用 TTL
+;=====================================================================
+
+;; ■サーバ一覧取得
+call sub_load_server_list
+
+;; ■接続先ホスト選択
+listbox '------ 接続先ホストを選択してください。 ------' '接続先ホスト選択' SERVER_CONF_FILE_LIST
+if result >= 0 then
+  SERVER_CONF_FILE = SERVER_CONF_FILE_LIST[result]
+else
+  end
+endif
+
+;; ■接続先ホスト情報取得
+FILE_NAME = './server_conf/'
+strconcat FILE_NAME SERVER_CONF_FILE
+include FILE_NAME
+
+;; ■ログインユーザ名選択
+USERNAME = ''
+PASSWORD = ''
+MESSAGE = "ログインユーザ名を選択してください。\n直接入力するときはCancelを押してください。"
+strspecial MESSAGE
+listbox MESSAGE 'ログインユーザ選択' USER_LIST
+if result >= 0 then
+  USERNAME = USER_LIST[result]
+  PASSWORD = PASSWORD_LIST[result]
+endif
+
+; ユーザ名直接入力
+strcompare USERNAME ''
+while result = 0
+  inputbox 'ログインユーザ名を入力してください。' SERVER_DISPLAY_NAME
+  USERNAME = inputstr 
+  strcompare USERNAME ''
+endwhile
+
+; パスワード直接入力
+strcompare PASSWORD ''
+while result = 0
+  inputbox 'パスワードを入力してください。' SERVER_DISPLAY_NAME
+  PASSWORD = inputstr
+  strcompare PASSWORD ''
+endwhile
+
+;; ■iniファイル設定
+getdir DIR
+makepath INI_DIR DIR 'ini'
+makepath INI_FILE_PATH INI_DIR INI_FILE_NAME
+
+;; ■ログイン実行
+include './lib/login.ttl'
+
+;; ■画面タイトル設定
+settitle SERVER_DISPLAY_NAME
+
+;; ■文字コード設定
+include './lib/encoding_setting.ttl'
+
+end
+
+;=====================================================================
+; 以下、サブルーチン定義
+;=====================================================================
+
+
+:sub_load_server_list
+; server_confディレクトリ内のttlファイル数を取得する。
+  setdir 'server_conf'
+  s='*.ttl'
+  findfirst DIR_HANDLE '*.ttl' SERVER_CONF_FILE
+  i = 0
+  while result
+    i = i + 1
+    findnext DIR_HANDLE SERVER_CONF_FILE
+  endwhile
+  findclose DIR_HANDLE
+
+  ; server_confディレクトリ内のttlファイル名を配列に設定
+  strdim SERVER_CONF_FILE_LIST i
+  findfirst DIR_HANDLE '*.ttl' SERVER_CONF_FILE
+  i = 0
+  while result
+    SERVER_CONF_FILE_LIST[i] = SERVER_CONF_FILE
+    i = i + 1
+    findnext DIR_HANDLE SERVER_CONF_FILE
+  endwhile
+  findclose DIR_HANDLE
+  setdir '../'
+return

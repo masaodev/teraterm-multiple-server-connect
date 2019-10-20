@@ -1,0 +1,36 @@
+;=====================================================================
+; SSHログイン TTL
+;=====================================================================
+
+;---------------------------------------------------------------------
+; パラメータ
+; HOST_ADDRESS ：(必須)
+; USERNAME ：(必須)
+; PASSWORD ：(必須)
+; INI_FILE_PATH ：(必須)
+;----------------------------------------------------------------------
+
+; ■コマンド組み立て
+COMMAND = HOST_ADDRESS
+strconcat COMMAND ':22 /ssh /2 /auth=password /user='
+strconcat COMMAND USERNAME
+strconcat COMMAND ' /passwd='
+strconcat COMMAND PASSWORD
+strconcat COMMAND ' /F='
+strconcat COMMAND INI_FILE_PATH
+
+; ■接続
+connect COMMAND
+
+; ■接続判定１
+if result <> 2 then 
+  messagebox 'It could not be connected.' 'Connection Error' 
+  end 
+endif
+
+; ■接続判定２（10秒以内にプロンプトが表示されない場合TeraTerm終了） 
+timeout = 10 
+wait '$' '#' 
+if result = 0 end
+
+exit
