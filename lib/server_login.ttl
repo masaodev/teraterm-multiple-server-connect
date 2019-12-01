@@ -1,0 +1,53 @@
+;=====================================================================
+; サーバ接続用 TTL
+;=====================================================================
+
+strcompare SERVER_DISPLAY_NAME ''
+if result = 0 then
+  SERVER_DISPLAY_NAME = 'XXXサーバ'
+endif
+
+strcompare INI_FILE_NAME ''
+if result = 0 then
+  INI_FILE_NAME = 'DEVELOP.INI'
+endif
+
+; 接続先ホスト直接入力
+strcompare HOST_ADDRESS ''
+while result = 0
+  inputbox '接続先を入力してください。' SERVER_DISPLAY_NAME
+  HOST_ADDRESS = inputstr 
+  strcompare HOST_ADDRESS ''
+endwhile
+
+; ユーザ名直接入力
+strcompare USERNAME ''
+while result = 0
+  inputbox 'ログインユーザ名を入力してください。' SERVER_DISPLAY_NAME
+  USERNAME = inputstr 
+  strcompare USERNAME ''
+endwhile
+
+; パスワード直接入力
+strcompare PASSWORD ''
+while result = 0
+  inputbox 'パスワードを入力してください。' SERVER_DISPLAY_NAME
+  PASSWORD = inputstr
+  strcompare PASSWORD ''
+endwhile
+
+;; ■iniファイル設定
+getdir DIR
+makepath INI_DIR DIR 'ini'
+makepath INI_FILE_PATH INI_DIR INI_FILE_NAME
+
+;; ■ログイン実行
+include './lib/ssh_login.ttl'
+
+;; ■画面タイトル設定
+settitle SERVER_DISPLAY_NAME
+
+;; ■文字コード設定
+include './lib/encoding_setting.ttl'
+
+exit
