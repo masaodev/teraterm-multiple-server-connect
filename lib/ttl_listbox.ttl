@@ -1,0 +1,51 @@
+;=====================================================================
+; TTLリスト化 TTL
+;=====================================================================
+
+;; ■サーバ一覧取得
+call sub_load_list
+
+;; ■接続先ホスト選択
+listbox '------ 接続先ホストを選択してください。 ------' '接続先ホスト選択' TTL_FILE_LIST
+if result >= 0 then
+  TTL_FILE = TTL_FILE_LIST[result]
+else
+  end
+endif
+
+;; ■TTL実行
+FILE_NAME = './'
+strconcat FILE_NAME TTL_FILE
+
+include FILE_NAME
+
+end
+
+;=====================================================================
+; 以下、サブルーチン定義
+;=====================================================================
+
+
+:sub_load_list
+; server_confディレクトリ内のttlファイル数を取得する。
+  setdir '../'
+  s='*.ttl'
+  findfirst DIR_HANDLE '*.ttl' TTL_FILE
+  i = 0
+  while result
+    i = i + 1
+    findnext DIR_HANDLE TTL_FILE
+  endwhile
+  findclose DIR_HANDLE
+
+  ; server_confディレクトリ内のttlファイル名を配列に設定
+  strdim TTL_FILE_LIST i
+  findfirst DIR_HANDLE '*.ttl' TTL_FILE
+  i = 0
+  while result
+    TTL_FILE_LIST[i] = TTL_FILE
+    i = i + 1
+    findnext DIR_HANDLE TTL_FILE
+  endwhile
+  findclose DIR_HANDLE
+return
