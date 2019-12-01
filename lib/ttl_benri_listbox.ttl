@@ -5,8 +5,8 @@
 ;; ■サーバ一覧取得
 call sub_load_list
 
-;; ■接続先ホスト選択
-listbox '------ 接続先ホストを選択してください。 ------' '接続先ホスト選択' TTL_FILE_LIST
+;; ■TTL選択
+listbox '-------------------- TTLを選択してください。 --------------------' 'TTL選択' TTL_FILE_LIST
 if result >= 0 then
   TTL_FILE = TTL_FILE_LIST[result]
 else
@@ -27,7 +27,7 @@ end
 
 
 :sub_load_list
-  setdir '../'
+  setdir '../../便利マクロ'
   s='*.ttl'
   findfirst DIR_HANDLE '*.ttl' TTL_FILE
   i = 0
